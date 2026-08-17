@@ -1,0 +1,118 @@
+generated: '2026-08-17'
+method: derived
+status: candidate
+source: >-
+  Derived from the OCPI module inventory Electra actually serves at
+  https://ocpi.go-electra.com/ocpi/cpo/2.2.1 (saved verbatim at
+  examples/go-electra-ocpi-cpo-2.2.1-endpoints.json). No MCP server was found.
+description: >-
+  Electra publishes NO MCP server. This file is a candidate design, not a
+  provider claim. Every search and probe missed: no mcp subdomain resolves, no
+  MCP endpoint is documented, no npm or PyPI package exists (see
+  packages/go-electra-packages.yml), no /.well-known/ai-plugin.json, no llms.txt
+  and no A2A agent card on any host. The tool list below is derived one-to-one
+  from the seven OCPI modules Electra's own version-detail document enumerates —
+  it names nothing that does not exist — but the tools are unbuilt and their
+  input schemas cannot be stated, because OCPI's parameter shapes are defined by
+  the standard and Electra's module endpoints are token-gated.
+deployment:
+  mode: none
+  endpoint: null
+  install: null
+  package: null
+  auth: unknown
+  verified: derived
+  note: >-
+    mode is `none` because nobody ships a server — not remote, not stdio. Probes
+    on 2026-08-17: mcp.go-electra.com did not resolve; no MCP endpoint appears in
+    the site sitemap, the help centre, or any Electra host's response; no
+    /.well-known/oauth-protected-resource (the RFC 9728 signal an MCP server
+    would carry) on any host. If Electra ever ships one it would need OCPI token
+    or a new auth model, which is why auth is `unknown` rather than guessed.
+server:
+  name: go-electra
+  transport: null
+  url: null
+tools:
+- name: list_locations
+  description: >-
+    List Electra charging locations, EVSEs and connectors with their status, as
+    the OCPI 2.2.1 locations module SENDER exposes them.
+  source_module: locations
+  source_endpoint: https://ocpi.go-electra.com/ocpi/cpo/2.2.1/locations
+  ocpi_role: SENDER
+  read_only: true
+  gated: true
+- name: get_tariffs
+  description: List the tariffs Electra applies, per the OCPI tariffs module.
+  source_module: tariffs
+  source_endpoint: https://ocpi.go-electra.com/ocpi/cpo/2.2.1/tariffs
+  ocpi_role: SENDER
+  read_only: true
+  gated: true
+- name: list_sessions
+  description: Retrieve in-progress and completed charging sessions.
+  source_module: sessions
+  source_endpoint: https://ocpi.go-electra.com/ocpi/cpo/2.2.1/sessions
+  ocpi_role: SENDER
+  read_only: true
+  gated: true
+- name: list_cdrs
+  description: Retrieve charge detail records (the billable record of a completed session).
+  source_module: cdrs
+  source_endpoint: https://ocpi.go-electra.com/ocpi/cpo/2.2.1/cdrs
+  ocpi_role: SENDER
+  read_only: true
+  gated: true
+- name: put_token
+  description: >-
+    Push an e-mobility service provider's driver token to Electra so its drivers
+    can authorise at Electra chargers.
+  source_module: tokens
+  source_endpoint: https://ocpi.go-electra.com/ocpi/cpo/2.2.1/tokens
+  ocpi_role: RECEIVER
+  read_only: false
+  gated: true
+  consequence: write
+- name: send_command
+  description: >-
+    Send a remote command to a charge point — OCPI 2.2.1 defines START_SESSION,
+    STOP_SESSION, RESERVE_NOW, CANCEL_RESERVATION and UNLOCK_CONNECTOR on this
+    module.
+  source_module: commands
+  source_endpoint: https://ocpi.go-electra.com/ocpi/cpo/2.2.1/commands
+  ocpi_role: RECEIVER
+  read_only: false
+  gated: true
+  consequence: physical
+  note: >-
+    This is the one module that actuates physical infrastructure. Any real MCP
+    exposure of it would need human-in-the-loop confirmation and a short-lived,
+    purpose-bound token — it starts and stops the delivery of electricity to a
+    vehicle.
+- name: exchange_credentials
+  description: >-
+    The OCPI credentials handshake by which two parties register tokens with each
+    other. Listed for completeness; it is an onboarding operation, not an agent
+    tool, and should not be exposed to an agent.
+  source_module: credentials
+  source_endpoint: https://ocpi.go-electra.com/ocpi/cpo/2.2.1/credentials
+  ocpi_role: [SENDER, RECEIVER]
+  read_only: false
+  gated: true
+  consequence: safety-critical
+  expose_to_agent: false
+input_schemas:
+  available: false
+  reason: >-
+    No OpenAPI exists to inherit parameters from, and every module endpoint
+    returns 401, so no live schema could be introspected. OCPI 2.2.1 defines the
+    parameter and object shapes in its own specification
+    (https://github.com/ocpi/ocpi); binding a tool to them would be quoting the
+    standard, not Electra, and is deliberately not done here.
+crosswalk:
+  emitted: false
+  reason: >-
+    A tool crosswalk binds MCP tools to OpenAPI operationIds. Electra publishes
+    no OpenAPI and no MCP server, so there is nothing on either side to bind and
+    no crosswalk file is written.

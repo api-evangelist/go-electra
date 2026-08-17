@@ -1,0 +1,95 @@
+generated: '2026-08-17'
+method: searched
+source: https://www.go-electra.com/en/price/
+description: >-
+  Electra publishes detailed, per-country consumer charging prices and one
+  subscription product. It publishes NO API pricing at all — there is no
+  developer plan, no metered API tier and no self-service purchase path for the
+  OCPI roaming interface, which is priced inside a bilateral commercial roaming
+  agreement. So the plans below are the charging product, recorded because they
+  are what Electra actually publishes, and the API line is recorded as an
+  explicit absence rather than omitted.
+plan_count: 4
+currency_note: Prices are VAT-inclusive; Switzerland is quoted in CHF, all other markets in EUR.
+plans:
+- name: Electra+
+  type: subscription
+  price: null
+  currency: EUR
+  billing_period: monthly
+  commitment: none
+  benefit: Up to -0.20 EUR/kWh (or -0.20 CHF/kWh in Switzerland) on every Electra charge
+  promotion: First month free with code PLUS2
+  included_quota: null
+  overage: null
+  note: >-
+    The monthly subscription fee itself is not stated on the pricing page — the
+    page leads with the per-kWh discount and the free first month and routes the
+    reader to the app to see the fee. Recorded as null rather than guessed.
+- name: Pay-as-you-go (Electra app, no subscription)
+  type: usage
+  price_unit: per kWh
+  monthly_fee: 0
+  rates:
+  - {market: France, currency: EUR, low: 0.39, high: 0.61, pricing: demand-variable}
+  - {market: Belgium, currency: EUR, low: 0.54, high: 0.75, pricing: demand-variable}
+  - {market: Spain, currency: EUR, low: 0.39, high: 0.59, pricing: demand-variable}
+  - {market: Switzerland, currency: CHF, low: 0.64, high: 0.64, pricing: fixed}
+  - {market: Italy / Germany / Austria / Netherlands, currency: EUR, low: 0.54, high: 0.59, pricing: fixed}
+  note: >-
+    In France, Belgium and Spain the per-kWh price varies by time of day and
+    station usage (peak / standard / off-peak) and the exact slot per station is
+    only visible in the app. The country-to-rate mapping was read from the
+    rendered pricing page; the page labels its country tabs with flag icons
+    rather than text, so the Italy/Germany/Austria/Netherlands grouping carries
+    slightly lower confidence than the France, Belgium, Spain and Switzerland
+    rows.
+- name: Ad-hoc without the app (debit card or third-party charging pass)
+  type: usage
+  price_unit: per kWh
+  monthly_fee: 0
+  rates:
+  - {market: France, currency: EUR, from: 0.64}
+  - {market: Belgium, currency: EUR, from: 0.79}
+  - {market: Spain, currency: EUR, from: 0.59}
+  - {market: Switzerland, currency: CHF, from: 0.69}
+  - {market: Italy / Germany / Austria / Netherlands, currency: EUR, from: 0.69}
+  note: >-
+    This is the roaming-facing price. When a driver taps a third-party RFID
+    charging card, Electra's help centre states that the card provider sets the
+    price the driver pays, so this rate is the floor Electra charges rather than
+    the driver's final price.
+- name: Electra for professionals / fleets
+  type: enterprise
+  price: null
+  currency: EUR
+  billing_period: monthly-invoice
+  included: >-
+    Roaming access to the Electra network, a fleet management dashboard with
+    permissions and activity monitoring, consolidated monthly invoicing, Electra
+    charging cards for drivers, a loyalty rewards programme, 24/7 support.
+  signup: https://business.go-electra.com/register
+  note: >-
+    No price is published. https://www.go-electra.com/en/business/ is a
+    self-service registration plus a lead form
+    (/en/business/pros-lead-form/) with no rate card.
+fees:
+- name: Overstay fee
+  amount: 0.40
+  currency: EUR
+  unit: per minute
+  applies_when: >-
+    After the vehicle reaches 80% state of charge, at stations flagged as busy /
+    saturated.
+  grace_period: 5 minutes
+  cap: 50 EUR per session
+api_pricing:
+  published: false
+  self_service: false
+  detail: >-
+    There is no API plan, no developer tier, no free tier and no metered API
+    price anywhere on Electra's public surface. Access to the OCPI CPO interface
+    at https://ocpi.go-electra.com/ocpi/cpo follows a bilateral roaming
+    agreement, and Electra publishes neither the terms nor a contact route
+    specific to it — its help centre lists 180+ accepted e-mobility service
+    provider cards but names no process for becoming one.

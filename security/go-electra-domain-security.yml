@@ -1,0 +1,46 @@
+generated: '2026-08-17'
+method: probed
+source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
+hosts:
+- host: www.go-electra.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Feb 19 23:59:59 2027 GMT
+  hsts: false
+- host: ocpi.go-electra.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Oct  2 18:50:05 2026 GMT
+  hsts: true
+  hsts_max_age: 63072000
+  hsts_include_subdomains: true
+  hsts_note: >-
+    The probe recorded null because the host root (/) returns 404 with no HSTS
+    header. A follow-up HEAD of the real API route
+    https://ocpi.go-electra.com/ocpi/cpo/versions on 2026-08-17 returned 200
+    with `strict-transport-security: max-age=63072000; includeSubDomains`, so
+    HSTS is present with a two-year max-age on the API surface itself.
+notes:
+- >-
+  www.go-electra.com is a CloudFront + S3 static site (server: CloudFront on the
+  301, AmazonS3 on the 200) and serves no HSTS header, so the marketing host is
+  the weaker of the two. The API host ocpi.go-electra.com is behind Cloudflare
+  in front of a Rails application and does send HSTS.
+- >-
+  ocpi.go-electra.com also returns a restrictive Content-Security-Policy
+  (default-src 'self') on JSON API responses, and the standard Rails hardening
+  set (X-Frame-Options SAMEORIGIN, X-Content-Type-Options nosniff,
+  Referrer-Policy strict-origin-when-cross-origin,
+  X-Permitted-Cross-Domain-Policies none).
+- >-
+  The observed CSP connect-src on ocpi.go-electra.com includes
+  http://localhost:3004 and http://localhost:3035 — development origins left in
+  a production policy header. Recorded as observed; it is a hygiene note, not a
+  vulnerability finding.
+domains:
+- domain: go-electra.com
+  dnssec: false
+  caa: []
+  spf: true
+  dmarc: true
+  dmarc_policy: quarantine

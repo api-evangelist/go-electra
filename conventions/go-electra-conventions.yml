@@ -1,0 +1,113 @@
+generated: '2026-08-17'
+method: probed
+source: >-
+  Observed request/response behaviour of
+  https://ocpi.go-electra.com/ocpi/cpo/* on 2026-08-17, saved verbatim in
+  examples/. Cross-links authentication/go-electra-authentication.yml,
+  errors/go-electra-problem-types.yml, lifecycle/go-electra-lifecycle.yml,
+  rate-limits/go-electra-rate-limits.yml.
+description: >-
+  Cross-cutting semantics of Electra's only machine-readable API. Electra
+  documents none of this — every field below is either observed on the wire or
+  explicitly marked as defined by the OCPI standard rather than by Electra. Where
+  a convention could not be observed because the module is token-gated, it is
+  recorded as unknown rather than assumed from the standard.
+authentication:
+  style: 'OCPI Token (Authorization: Token <credential>)'
+  self_service: false
+  observed: 'WWW-Authenticate: Token realm="Application"'
+  detail: authentication/go-electra-authentication.yml
+response_envelope:
+  style: OCPI envelope
+  observed: true
+  fields:
+    data: The payload — an array on /versions, an object on a version-detail endpoint.
+    status_code: 'OCPI status code. 1000 observed on every successful response.'
+    status_message: '"Success" observed on every successful response.'
+    timestamp: ISO 8601 UTC, e.g. 2026-08-17T13:45:30Z.
+  example: examples/go-electra-ocpi-cpo-versions.json
+  note: >-
+    Defined by OCPI, not by Electra, but Electra implements it correctly and
+    consistently on both protocol versions.
+error_envelope:
+  style: none
+  observed: >-
+    Errors leave the OCPI envelope entirely. HTTP 401 returns text/plain `Token:
+    Access denied.` (27 bytes). HTTP 404 returns either text/plain `Not found` or
+    the Rails default HTML 404 page depending on the route. No JSON, no
+    problem+json, no OCPI status_code on the error path.
+  detail: errors/go-electra-problem-types.yml
+  gap: >-
+    An OCPI client expecting the standard's 2xxx/3xxx status_code family in a
+    JSON envelope will get an unparseable plain-text or HTML body on both the
+    auth-failure and not-found paths. This is the clearest contract defect
+    observable without credentials.
+versioning:
+  scheme: OCPI version negotiation via a versions endpoint
+  current: 2.2.1
+  also_supported: [2.1.1]
+  discovery: https://ocpi.go-electra.com/ocpi/cpo/versions
+  path_form: /ocpi/cpo/{version}/{module}
+  header_versioning: false
+  detail: lifecycle/go-electra-lifecycle.yml
+  note: >-
+    Version negotiation is the one convention Electra gets fully right: two
+    versions live simultaneously, both discoverable anonymously, each with its
+    own endpoint inventory. Requesting an unsupported version
+    (/ocpi/cpo/2.0.1) returns 404 rather than a misleading redirect.
+content_negotiation:
+  request_content_type: application/json (OCPI)
+  response_content_type: application/json; charset=utf-8
+  vary: 'Vary: Accept observed on both 200 and 401 responses'
+idempotency:
+  supported: unknown
+  header: null
+  note: >-
+    No idempotency contract is documented and none could be observed: the only
+    write-bearing modules (commands POST, tokens PUT) are token-gated. OCPI
+    itself specifies no idempotency-key header. NO `Idempotency` pointer is
+    emitted in apis.yml — there is no evidence of an idempotency contract to
+    point at.
+pagination:
+  supported: unknown
+  note: >-
+    OCPI defines offset/limit pagination with Link and X-Total-Count on SENDER
+    modules (locations, sessions, cdrs, tariffs — all four are SENDER on
+    Electra's 2.2.1 surface), but every one is gated, so no pagination parameter
+    or header could be observed. Not asserted.
+field_expansion:
+  supported: false
+  note: OCPI has no expand/sparse-fieldset mechanism.
+metadata:
+  supported: false
+  note: No customer-defined metadata surface.
+request_tracing:
+  header: X-Request-Id
+  direction: response
+  observed: >-
+    Every ocpi.go-electra.com response carries an `x-request-id` UUID (e.g.
+    45979a6f-eddb-4967-9398-f6d93e301ee5) plus `x-runtime` with the server-side
+    duration in seconds. OCPI's own X-Request-ID / X-Correlation-ID request
+    headers are not documented by Electra and their handling could not be
+    verified on a gated route.
+  note: >-
+    Useful in practice — a partner reporting a failed call has a real
+    correlation id to quote — but it is undocumented, so no consumer knows to
+    capture it.
+rate_limit_signaling:
+  headers: []
+  observed: >-
+    No X-RateLimit-*, no RateLimit-*, no Retry-After on any response, including
+    the anonymous 200s.
+  detail: rate-limits/go-electra-rate-limits.yml
+caching:
+  observed: 'cache-control: max-age=0, private, must-revalidate on the 200s; no-cache on the 401'
+  etag: 'Weak ETag observed on /ocpi/cpo/versions (W/"5a4f9da10b50e8577b67e23eeee192d1")'
+  note: >-
+    A conditional GET against the versions endpoint is therefore possible, which
+    is a small but genuine efficiency affordance for a polling roaming partner.
+gaps:
+- No published documentation of any of the above.
+- Errors are not machine-readable.
+- No rate-limit signal, so a partner cannot back off intelligently.
+- No security.txt, so a broken contract has no reporting address.

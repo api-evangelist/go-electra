@@ -1,0 +1,70 @@
+generated: '2026-08-17'
+method: probed
+source: >-
+  https://ocpi.go-electra.com/ocpi/cpo/versions and version-detail endpoints
+  (2026-08-17); site and help-centre search for a status page, SLA, versioning
+  policy and deprecation policy.
+description: >-
+  Electra's API lifecycle posture is one strong signal surrounded by absences.
+  The strong signal is genuine multi-version support with anonymous discovery.
+  The absences are total: no status page, no SLA, no deprecation policy, no
+  changelog, no release notes, no sunset headers.
+versioning:
+  scheme: ocpi-version-negotiation
+  current: 2.2.1
+  supported: ['2.1.1', '2.2.1']
+  discovery: https://ocpi.go-electra.com/ocpi/cpo/versions
+  path_form: /ocpi/cpo/{version}/{module}
+  policy_url: null
+  note: >-
+    Running 2.1.1 and 2.2.1 concurrently, each with its own published endpoint
+    inventory, is real backwards-compatibility work: a roaming partner still on
+    2.1.1 is not broken by Electra's move to 2.2.1. Electra publishes no policy
+    saying how long 2.1.1 will stay, which is the missing half.
+  unsupported_version_behaviour: >-
+    GET /ocpi/cpo/2.0.1 returns HTTP 404 rather than an OCPI 3002
+    ("unsupported version") status_code in a JSON envelope.
+deprecation:
+  policy_url: null
+  sunset_header: false
+  deprecation_header: false
+  evidence: >-
+    No Deprecation or Sunset header on any of the six routes probed on
+    2026-08-17; no deprecation, sunset or API-retirement policy anywhere on
+    go-electra.com, in the sitemap (all /en/ pages enumerated), or in the help
+    centre's twelve collections. NO `Deprecation` pointer is emitted.
+sla:
+  url: null
+  uptime_target: null
+  note: >-
+    Electra markets "24/7 support" and network availability on
+    https://www.go-electra.com/en/business/ but publishes no availability target
+    and no service-level agreement, for either the charging network or the API.
+status_page:
+  url: null
+  evidence: >-
+    status.go-electra.com does not resolve (DNS failure, curl exit code 6 /
+    HTTP 000 on 2026-08-17). No status, uptime or incident page is linked from
+    the site footer, the help centre, or the business page. NO `StatusPage`
+    pointer is emitted — this is a real miss, and for a company whose product is
+    physical infrastructure a roaming partner has no machine-readable way to
+    learn that a region is degraded.
+changelog:
+  url: null
+  note: >-
+    https://www.go-electra.com/en/newsroom/all-categories/ is a marketing blog
+    (categories: Mobility, Our news, For the pros, Electric charging), not a
+    dated API changelog. It is wired as `Blog`, not as `ChangeLog`, and no
+    changelog artifact is written.
+deprecated_operations: []
+deprecated_operations_note: >-
+  Not derivable — Electra publishes no OpenAPI, and no module endpoint is marked
+  deprecated in either version-detail document.
+observed_versions_history:
+- version: 2.1.1
+  first_seen: '2026-08-17'
+  status: live
+- version: 2.2.1
+  first_seen: '2026-08-17'
+  status: live
+  note: Newest advertised version; treated as current.

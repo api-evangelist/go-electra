@@ -42,6 +42,22 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Electra is a company surfaced as a portfolio company of serena and added to the API Evangelist network as a stub for enrichment. Sector: climate-tech. This profile is a lead awaiting the enrichment pipeline.
+Electra is a European operator of ultra-fast electric-vehicle charging, headquartered in Paris and
+led by co-founder and CEO Aurelien de Meaux. It designs, finances, installs and operates its own DC
+fast-charging stations — 770+ live with 68 more building, up to 400 kW — across France, Belgium,
+Spain, Italy, Germany, Austria, the Netherlands and Switzerland, with a stated target of 2,200
+stations / 15,000 charge points in Europe by 2030.
+
+**API surface.** Electra publishes no developer portal, no API documentation, no OpenAPI, no
+GraphQL, no MCP server and no A2A agent card — all probed and missed on 2026-08-17. It does run one
+real machine-readable API: an Open Charge Point Interface (OCPI) implementation in the Charge Point
+Operator role at `https://ocpi.go-electra.com/ocpi/cpo`, serving OCPI 2.1.1 and 2.2.1 concurrently.
+Version negotiation answers anonymously with HTTP 200 and enumerates all seven modules (cdrs,
+commands, credentials, locations, sessions, tariffs, tokens) with SENDER/RECEIVER roles on 2.2.1;
+every data module returns HTTP 401 with `WWW-Authenticate: Token realm="Application"`, OCPI's own
+bilateral token scheme. Access follows a commercial roaming agreement — there is no signup, no
+sandbox and no self-service credential.
+
+Sector: climate-tech.
 
 Source: portfolio company of [serena](https://github.com/api-evangelist/serena) — https://www.go-electra.com/

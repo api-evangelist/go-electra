@@ -1,0 +1,89 @@
+generated: '2026-08-17'
+method: probed
+source: Anonymous HTTP GETs on 2026-08-17
+description: >-
+  A recorded absence. Electra serves no /.well-known/ document on any host. NO
+  `WellKnown` or `SecurityTxt` pointer is emitted in apis.yml, because every
+  path either 404d or answered 200 with a single-page-app HTML shell that is
+  served identically for every path on that host — a shell is not a document,
+  and a pointer would assert a discovery surface Electra does not run.
+hosts:
+- host: go-electra.com
+  kind: marketing (CloudFront + S3)
+  documents:
+  - {path: /.well-known/security.txt, status: 404}
+  - {path: /.well-known/openid-configuration, status: 404}
+  - {path: /.well-known/oauth-authorization-server, status: 404}
+  - {path: /.well-known/oauth-protected-resource, status: 404}
+  - {path: /.well-known/api-catalog, status: 404}
+  - {path: /.well-known/ai-plugin.json, status: 404}
+  - {path: /.well-known/agent-card.json, status: 404}
+  - {path: /.well-known/agent.json, status: 404}
+  - {path: /llms.txt, status: 404}
+  - {path: /apis.json, status: 404}
+  note: >-
+    Returns the 160KB Gatsby 404 HTML page for all of the above, with an HTTP 404
+    status.
+- host: ocpi.go-electra.com
+  kind: OCPI CPO API (Cloudflare + Rails)
+  documents:
+  - {path: /.well-known/security.txt, status: 404}
+  - {path: /.well-known/openid-configuration, status: 404}
+  - {path: /.well-known/oauth-authorization-server, status: 404}
+  - {path: /.well-known/oauth-protected-resource, status: 404}
+  - {path: /.well-known/api-catalog, status: 404}
+  - {path: /.well-known/ai-plugin.json, status: 404}
+  - {path: /.well-known/agent-card.json, status: 404}
+  - {path: /.well-known/agent.json, status: 404}
+  note: >-
+    All return text/plain `Not found`. This is the host that most needs a
+    security.txt and an api-catalog, since it is the only real API host Electra
+    runs.
+- host: backend.go-electra.com
+  kind: app/fleet backend (Rails)
+  documents:
+  - {path: /.well-known/security.txt, status: 404}
+  - {path: /.well-known/openid-configuration, status: 404}
+  - {path: /.well-known/oauth-authorization-server, status: 404}
+  - {path: /.well-known/oauth-protected-resource, status: 404}
+  - {path: /.well-known/api-catalog, status: 404}
+  - {path: /.well-known/ai-plugin.json, status: 404}
+  - {path: /.well-known/agent-card.json, status: 404}
+  - {path: /.well-known/agent.json, status: 404}
+  note: >-
+    Confirmed as the API origin for both app.go-electra.com and
+    business.go-electra.com (both preconnect to it in their HTML head), but it
+    serves no discovery document and no documented route was reachable
+    anonymously.
+- host: app.go-electra.com
+  kind: consumer web app (SPA)
+  documents:
+  - {path: /.well-known/security.txt, status: 200, document: false}
+  - {path: /.well-known/openid-configuration, status: 200, document: false}
+  - {path: /.well-known/oauth-authorization-server, status: 200, document: false}
+  - {path: /.well-known/oauth-protected-resource, status: 200, document: false}
+  - {path: /.well-known/api-catalog, status: 200, document: false}
+  - {path: /.well-known/ai-plugin.json, status: 200, document: false}
+  - {path: /.well-known/agent-card.json, status: 200, document: false}
+  - {path: /.well-known/agent.json, status: 200, document: false}
+  note: >-
+    SPA catch-all. Every path returns the identical 5,780-byte
+    `text/html` index shell with HTTP 200. Treated as a MISS on every path — this
+    is the classic false positive the pipeline warns about, and no pointer is
+    emitted from it.
+- host: business.go-electra.com
+  kind: fleet portal (SPA)
+  documents:
+  - {path: /openapi.json, status: 200, document: false}
+  note: >-
+    Same catch-all behaviour, 3,170-byte HTML shell for every path.
+- host: careers.go-electra.com
+  kind: Teamtailor careers site (third-party)
+  documents:
+  - {path: /.well-known/agent-card.json, status: 404}
+- host: stations.go-electra.com
+  kind: station directory (SPA)
+  documents:
+  - {path: /llms.txt, status: 200, document: false}
+  - {path: /sitemap.xml, status: 200, document: false}
+  note: 329KB HTML shell returned for both; not documents.

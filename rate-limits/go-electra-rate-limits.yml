@@ -1,0 +1,47 @@
+generated: '2026-08-17'
+method: probed
+source: >-
+  Response headers observed on https://ocpi.go-electra.com/ocpi/cpo/versions
+  (HTTP 200), /ocpi/cpo/2.1.1 (200), /ocpi/cpo/2.2.1 (200) and
+  /ocpi/cpo/2.2.1/locations (401) on 2026-08-17; plus a full search of
+  go-electra.com (sitemap enumerated) and the help centre for a published limit.
+limit_count: 0
+description: >-
+  An honest zero. Electra publishes no rate limits, and returns no rate-limit
+  signal of any kind on the wire. A roaming partner polling the locations or
+  tariffs module has no documented budget and no runtime feedback, so the only
+  available strategy is to back off on failure — and even then, the 401/404
+  responses carry no Retry-After.
+limits: []
+headers:
+  observed: []
+  x_ratelimit_family: false
+  ietf_ratelimit_family: false
+  retry_after: false
+  detail: >-
+    The full response header set observed on the anonymous 200 was: date,
+    content-type, content-length, x-frame-options, x-xss-protection,
+    x-content-type-options, x-download-options,
+    x-permitted-cross-domain-policies, referrer-policy, vary, etag,
+    cache-control, content-security-policy, x-request-id, x-runtime,
+    strict-transport-security, cf-cache-status, server, cf-ray. Not one
+    rate-limit field among them.
+exhaustion_status: null
+exhaustion_note: >-
+  No 429 was observed and none is documented. Electra sits behind Cloudflare
+  (server: cloudflare, cf-ray present), so an undocumented edge rate limit or bot
+  rule may exist; nothing about it is published, and nothing is asserted here.
+mitigations_available_to_a_client:
+- >-
+  The versions endpoint returns a weak ETag (W/"5a4f9da10b50e8577b67e23eeee192d1")
+  and cache-control max-age=0, private, must-revalidate, so a conditional GET is
+  possible for version negotiation — the one place a polling client can be a good
+  citizen without guidance.
+- >-
+  Every response carries x-request-id and x-runtime, which at least gives a
+  partner something to quote when raising a throttling question through a
+  commercial channel.
+gaps:
+- No published limits.
+- No runtime headers.
+- No documented 429 behaviour and no Retry-After.

@@ -1,0 +1,81 @@
+generated: '2026-08-17'
+method: probed
+source: >-
+  Observed responses from https://ocpi.go-electra.com on 2026-08-17. Electra
+  publishes no error reference, so nothing here is copied from documentation and
+  nothing is inferred beyond what was returned on the wire.
+format: none
+format_note: >-
+  NOT rfc9457. No response uses application/problem+json. Electra's success
+  responses use the OCPI envelope (data / status_code / status_message /
+  timestamp) but its error responses abandon it entirely and return plain text or
+  HTML, which means an OCPI client cannot parse an Electra failure with the same
+  code path it uses for a success.
+problems:
+- status: 401
+  content_type: text/plain; charset=utf-8
+  body: 'Token: Access denied.'
+  title: Missing or invalid OCPI credentials token
+  headers:
+    WWW-Authenticate: Token realm="Application"
+  remediation: >-
+    Complete the bilateral OCPI credentials handshake with Electra under a
+    roaming agreement and send `Authorization: Token <credential>`. There is no
+    self-service path.
+  observed_on:
+  - https://ocpi.go-electra.com/ocpi/cpo/2.2.1/locations
+  - https://ocpi.go-electra.com/ocpi/cpo/2.1.1/locations
+  - https://ocpi.go-electra.com/ocpi/cpo/2.2.1/tariffs
+  fetched: '2026-08-17'
+- status: 404
+  content_type: text/plain; charset=utf-8
+  body: Not found
+  title: Unknown route (API-shaped path)
+  remediation: >-
+    Re-read the endpoint inventory from the version-detail document rather than
+    constructing paths by hand.
+  observed_on:
+  - https://ocpi.go-electra.com/ocpi/cpo/2.0.1
+  - https://ocpi.go-electra.com/openapi.json
+  - https://ocpi.go-electra.com/.well-known/security.txt
+  fetched: '2026-08-17'
+- status: 404
+  content_type: text/html; charset=UTF-8
+  body: Rails default 404 page ("The page you were looking for doesn't exist.")
+  title: Unknown route (framework fallback)
+  remediation: >-
+    Same as above. Note the two distinct 404 shapes — plain text and HTML — come
+    from different layers of the same application, so a client must not assume a
+    single error content type.
+  observed_on:
+  - https://ocpi.go-electra.com/ocpi/versions
+  - https://ocpi.go-electra.com/ocpi/emsp/versions
+  - https://ocpi.go-electra.com/ocpi/cpo/2.2.1/credentials
+  fetched: '2026-08-17'
+success_envelope:
+- status: 200
+  content_type: application/json; charset=utf-8
+  status_code: 1000
+  status_message: Success
+  observed_on:
+  - https://ocpi.go-electra.com/ocpi/cpo/versions
+  - https://ocpi.go-electra.com/ocpi/cpo/2.1.1
+  - https://ocpi.go-electra.com/ocpi/cpo/2.2.1
+standard_defined_not_observed:
+  note: >-
+    OCPI defines its own status_code families — 1xxx success, 2xxx client errors
+    (2000 generic, 2001 invalid/missing parameters, 2002 not enough information,
+    2003 unknown location), 3xxx server errors (3000 generic, 3001 unable to use
+    the client's API, 3002 unsupported version, 3003 no matching endpoints). NONE
+    of these was observed on Electra's surface, and none is asserted as
+    implemented. They are listed here only so an integrator knows what the
+    standard would require; whether Electra returns them behind the token gate
+    could not be established. See https://github.com/ocpi/ocpi.
+gaps:
+- >-
+  No published error reference of any kind.
+- >-
+  The 401 body is a 27-byte plain-text string, so a client cannot distinguish
+  "no token sent", "expired token" and "revoked token" programmatically.
+- >-
+  Two different 404 content types on the same host.

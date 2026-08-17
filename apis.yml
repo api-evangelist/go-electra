@@ -1,20 +1,116 @@
 aid: go-electra
 name: Electra
-description: 'Electra is a company surfaced as a portfolio company of serena and added to the API Evangelist
-  network as a stub for enrichment. Sector: climate-tech. This profile is a lead awaiting the enrichment
-  pipeline.'
 url: https://raw.githubusercontent.com/api-evangelist/go-electra/refs/heads/main/apis.yml
 x-type: company
 x-source: serena-portfolio
-x-tier: stub
-x-tier-reason: portfolio-lead
+description: >-
+  Electra is a European operator of ultra-fast electric-vehicle charging,
+  headquartered at 104 rue de Richelieu in the 2nd arrondissement of Paris and
+  led by co-founder and CEO Aurelien de Meaux. It designs, finances, installs
+  and operates its own DC fast-charging stations rather than reselling someone
+  else's hardware, advertising 770+ live stations with 68 more under
+  construction, charge rates up to 400 kW, and a target of 2,200 stations /
+  15,000 charge points across Europe by 2030. Its own pricing and station pages
+  cover France, Belgium, Spain, Italy, Germany, Austria, the Netherlands and
+  Switzerland, with city hubs in Paris, Lyon, Marseille, Brussels, Antwerp,
+  Liege, Milan, Bologna, Turin, Madrid, Barcelona and Zurich. The commercial
+  surface is consumer- and fleet-facing: a mobile app, an Electra+ subscription
+  that cuts up to 0.20 EUR/kWh, an RFID charging card, Autocharge and
+  Plug&Charge, and a fleet dashboard at business.go-electra.com. It is a Serena
+  portfolio company and has raised a 160 MEUR round, a 304 MEUR Series B and a
+  433 MEUR debt facility. Electra publishes NO developer portal, NO API
+  documentation, NO OpenAPI, NO llms.txt, NO MCP server and NO A2A agent card —
+  every one of those was probed and missed on 2026-08-17. What it does run, and
+  what almost nobody looking at the marketing site would find, is a real
+  machine-readable API: a live Open Charge Point Interface implementation in the
+  Charge Point Operator role at https://ocpi.go-electra.com/ocpi/cpo, serving
+  BOTH OCPI 2.1.1 and OCPI 2.2.1 concurrently. Its version-negotiation
+  endpoints answer anonymously with HTTP 200 and enumerate the full module
+  inventory — cdrs, commands, credentials, locations, sessions, tariffs and
+  tokens, with SENDER/RECEIVER roles declared on the 2.2.1 surface — while every
+  data module itself returns HTTP 401 with `WWW-Authenticate: Token
+  realm="Application"`, OCPI's own bilateral token scheme. That is a documented
+  open industry standard, fully implemented, discoverable without credentials
+  and readable only with a roaming agreement; its production use is evidenced by
+  the 180+ e-mobility service provider cards Electra's own help centre lists as
+  accepted at its chargers.
+image: https://www.go-electra.com/favicons/apple-touch-icon-1024x1024.png
 specificationVersion: '0.20'
 created: '2026-08-17'
 modified: '2026-08-17'
 tags:
 - Company
 - Climate Tech
-apis: []
+- EV Charging
+- Energy
+- Mobility
+- OCPI
+- Roaming
+- Charge Point Operator
+- Electric Vehicles
+- Fast Charging
+- Charging Sessions
+- Tariffs
+- Electrification
+- France
+- Europe
+apis:
+- aid: go-electra:go-electra-ocpi-cpo-api
+  name: Electra OCPI CPO API
+  description: >-
+    Electra's Open Charge Point Interface implementation in the Charge Point
+    Operator role — the roaming interface an e-mobility service provider calls
+    to read Electra's locations and tariffs, authorise its own drivers on
+    Electra hardware, receive session and charge-detail records, and send remote
+    start/stop commands. Electra publishes no human documentation and no
+    specification document for it; the surface was established entirely by
+    anonymous probe on 2026-08-17. GET
+    https://ocpi.go-electra.com/ocpi/cpo/versions returned HTTP 200
+    (application/json) advertising two concurrent protocol versions, 2.1.1 and
+    2.2.1. GET /ocpi/cpo/2.1.1 returned HTTP 200 enumerating seven module
+    endpoints — cdrs, commands, credentials, locations, sessions, tariffs,
+    tokens. GET /ocpi/cpo/2.2.1 returned HTTP 200 enumerating the same modules
+    plus explicit OCPI 2.2.1 roles: cdrs SENDER, commands RECEIVER, credentials
+    both SENDER and RECEIVER, locations SENDER, sessions SENDER, tariffs SENDER,
+    tokens RECEIVER. Every module endpoint itself is closed: GET
+    /ocpi/cpo/2.2.1/locations, /ocpi/cpo/2.1.1/locations and
+    /ocpi/cpo/2.2.1/tariffs each returned HTTP 401 with the body `Token: Access
+    denied.` and the header `WWW-Authenticate: Token realm="Application"`, which
+    is OCPI's own bilateral Token authorization scheme rather than a blanket
+    wall — sibling paths such as /ocpi/versions, /ocpi/cpo/2.0.1 and
+    /ocpi/cpo/2.2.1/credentials returned 404, proving the 401s are real routes.
+    Access follows a commercial roaming agreement and an OCPI credentials
+    handshake; there is no signup, no sandbox and no self-service token. No
+    anonymous locations, tariff or availability feed of any kind is published,
+    so Electra exposes zero open charging-network market data.
+  humanURL: https://ocpi.go-electra.com/ocpi/cpo/versions
+  baseURL: https://ocpi.go-electra.com/ocpi/cpo
+  tags:
+  - EV Charging
+  - OCPI
+  - Roaming
+  - Charge Point Operator
+  - Locations
+  - Tariffs
+  - Charging Sessions
+  - Europe
+  properties:
+  - type: Specification
+    url: https://github.com/ocpi/ocpi
+  - type: Authentication
+    url: authentication/go-electra-authentication.yml
+  - type: Conformance
+    url: conformance/go-electra-conformance.yml
+  - type: Conventions
+    url: conventions/go-electra-conventions.yml
+  - type: ErrorCatalog
+    url: errors/go-electra-problem-types.yml
+  - type: Examples
+    url: examples/_index.yml
+  - type: RateLimits
+    url: rate-limits/go-electra-rate-limits.yml
+  - type: Lifecycle
+    url: lifecycle/go-electra-lifecycle.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -23,3 +119,64 @@ maintainers:
 common:
 - type: Website
   url: https://www.go-electra.com/
+- type: About
+  url: https://www.go-electra.com/en/about/
+- type: Pricing
+  url: https://www.go-electra.com/en/price/
+- type: SignUp
+  url: https://business.go-electra.com/register
+- type: Login
+  url: https://business.go-electra.com/sign-in
+- type: Support
+  url: https://intercom.help/go-electra/en/
+- type: Contact
+  url: https://www.go-electra.com/en/contact/
+- type: Blog
+  url: https://www.go-electra.com/en/newsroom/all-categories/
+- type: TermsOfService
+  url: https://www.go-electra.com/en/tos/
+- type: PrivacyPolicy
+  url: https://www.go-electra.com/en/privacy/
+- type: Legal
+  url: https://www.go-electra.com/en/legal/
+- type: TrustCenter
+  url: https://trust.go-electra.com/
+- type: Ethics
+  url: https://www.go-electra.com/en/whistleblowing-and-grievance/
+- type: Sustainability
+  url: https://www.go-electra.com/en/sustainability/
+- type: Application
+  url: https://app.go-electra.com/
+- type: LinkedIn
+  url: https://www.linkedin.com/company/electra-charge
+- type: Careers
+  url: https://careers.go-electra.com/en
+- type: Authentication
+  url: authentication/go-electra-authentication.yml
+- type: Conformance
+  url: conformance/go-electra-conformance.yml
+- type: Conventions
+  url: conventions/go-electra-conventions.yml
+- type: ErrorCatalog
+  url: errors/go-electra-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/go-electra-lifecycle.yml
+- type: Examples
+  url: examples/_index.yml
+- type: DomainSecurity
+  url: security/go-electra-domain-security.yml
+- type: Packages
+  url: packages/go-electra-packages.yml
+- type: Plans
+  url: plans/go-electra-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/go-electra-rate-limits.yml
+- type: MCPServer
+  url: mcp/go-electra-mcp.yml
+- type: LLMsTxt
+  url: llms/go-electra-llms.txt
+x-enrichment:
+  date: '2026-08-17'
+  status: enriched
+  artifacts_added: 17
+  pass: local-v1

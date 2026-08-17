@@ -1,0 +1,51 @@
+generated: '2026-08-17'
+method: probed
+source: >-
+  Anonymous HTTP GETs against https://ocpi.go-electra.com on 2026-08-17. Each
+  file is the response body verbatim, unmodified.
+description: >-
+  Electra publishes no OpenAPI and no example payloads of its own, so these are
+  not curated documentation samples — they are the actual responses Electra's
+  OCPI Charge Point Operator surface returns to an unauthenticated caller. They
+  are the only machine-readable contract material Electra makes public, and
+  together they are what an integrator uses to negotiate a protocol version
+  before the bilateral OCPI token handshake. Nothing here is generated or
+  reconstructed.
+examples:
+- file: go-electra-ocpi-cpo-versions.json
+  name: OCPI CPO version negotiation
+  url: https://ocpi.go-electra.com/ocpi/cpo/versions
+  http_status: 200
+  content_type: application/json; charset=utf-8
+  fetched: '2026-08-17'
+  summary: >-
+    Two concurrent OCPI versions advertised — 2.1.1 and 2.2.1 — each with the
+    URL of its own version-detail document. Wrapped in the standard OCPI
+    envelope (data / status_code 1000 / status_message Success / timestamp).
+- file: go-electra-ocpi-cpo-2.1.1-endpoints.json
+  name: OCPI 2.1.1 CPO endpoint inventory
+  url: https://ocpi.go-electra.com/ocpi/cpo/2.1.1
+  http_status: 200
+  content_type: application/json; charset=utf-8
+  fetched: '2026-08-17'
+  summary: >-
+    Seven module endpoints — cdrs, commands, credentials, locations, sessions,
+    tariffs, tokens. OCPI 2.1.1 carries no role field, so none is declared.
+- file: go-electra-ocpi-cpo-2.2.1-endpoints.json
+  name: OCPI 2.2.1 CPO endpoint inventory
+  url: https://ocpi.go-electra.com/ocpi/cpo/2.2.1
+  http_status: 200
+  content_type: application/json; charset=utf-8
+  fetched: '2026-08-17'
+  summary: >-
+    The same seven modules with explicit 2.2.1 roles — cdrs SENDER, commands
+    RECEIVER, credentials listed twice (SENDER and RECEIVER), locations SENDER,
+    sessions SENDER, tariffs SENDER, tokens RECEIVER — which is the correct
+    role split for a CPO under OCPI 2.2.1.
+not_captured:
+  reason: >-
+    Every data module is gated. GET /ocpi/cpo/2.2.1/locations,
+    /ocpi/cpo/2.1.1/locations and /ocpi/cpo/2.2.1/tariffs each returned HTTP 401
+    with body `Token: Access denied.` and header `WWW-Authenticate: Token
+    realm="Application"` on 2026-08-17, so no location, tariff, session or CDR
+    payload could be captured anonymously and none has been invented.

@@ -1,0 +1,205 @@
+generated: '2026-08-17'
+method: probed
+source: >-
+  Anonymous probes of ocpi.go-electra.com, go-electra.com, www.go-electra.com,
+  app.go-electra.com, backend.go-electra.com, business.go-electra.com,
+  stations.go-electra.com and trust.go-electra.com on 2026-08-17;
+  examples/go-electra-ocpi-cpo-*.json; security/go-electra-domain-security.yml;
+  https://intercom.help/go-electra/fr/articles/5917336-quelle-carte-de-recharge-puis-je-utiliser-chez-electra
+description: >-
+  Which cross-cutting and industry standards Electra's public surface conforms
+  to. The headline finding is that Electra's only machine-readable API is an
+  implementation of a genuine open industry standard — the Open Charge Point
+  Interface in the Charge Point Operator role — running two protocol versions
+  concurrently with correct 2.2.1 role declarations, and that its version
+  negotiation is readable without credentials. What it does not have is any
+  OpenAPI description, any OAuth/OIDC identity layer, any RFC 9457 error
+  contract, any security.txt, and any published certification it lets an
+  anonymous reader see.
+standards:
+- id: ocpi-2.1.1
+  conforms: true
+  role: CPO
+  modules: [cdrs, commands, credentials, locations, sessions, tariffs, tokens]
+  evidence: >-
+    GET https://ocpi.go-electra.com/ocpi/cpo/versions returned 200 advertising
+    version 2.1.1, and GET /ocpi/cpo/2.1.1 returned 200 with the seven-module
+    endpoint inventory saved verbatim at
+    examples/go-electra-ocpi-cpo-2.1.1-endpoints.json (2026-08-17).
+- id: ocpi-2.2.1
+  conforms: true
+  role: CPO
+  modules: [cdrs, commands, credentials, locations, sessions, tariffs, tokens]
+  module_roles:
+    cdrs: SENDER
+    commands: RECEIVER
+    credentials: [SENDER, RECEIVER]
+    locations: SENDER
+    sessions: SENDER
+    tariffs: SENDER
+    tokens: RECEIVER
+  evidence: >-
+    GET /ocpi/cpo/2.2.1 returned 200 with per-endpoint `role` fields, saved
+    verbatim at examples/go-electra-ocpi-cpo-2.2.1-endpoints.json (2026-08-17).
+    The SENDER/RECEIVER split matches the CPO side of OCPI 2.2.1.
+- id: ocpi-version-negotiation
+  conforms: true
+  evidence: >-
+    The RFC-style version-discovery flow OCPI requires (versions endpoint ->
+    version-detail endpoint -> module endpoints) is implemented and, unusually,
+    the first two hops answer anonymously with HTTP 200.
+- id: ocpi-emsp-role
+  conforms: false
+  evidence: >-
+    GET https://ocpi.go-electra.com/ocpi/emsp/versions returned HTTP 404 (Rails
+    default 404 page) on 2026-08-17 — no eMSP-side route is exposed. Electra is
+    a CPO only.
+- id: ocpi-token-auth
+  conforms: true
+  evidence: >-
+    Every module endpoint answered HTTP 401 with `WWW-Authenticate: Token
+    realm="Application"` and the body `Token: Access denied.`, which is OCPI's
+    own Token authorization scheme.
+- id: openapi
+  conforms: false
+  evidence: >-
+    /openapi.json, /openapi.yaml, /swagger.json, /v1/openapi.json, /api-docs,
+    /docs and /redoc were probed on go-electra.com (404 HTML),
+    backend.go-electra.com (404), ocpi.go-electra.com (404) and
+    app.go-electra.com / business.go-electra.com (200 but the same HTML SPA
+    shell for every path, not a spec). No OpenAPI or Swagger exists.
+- id: graphql
+  conforms: false
+  evidence: >-
+    /graphql returned 404 on go-electra.com, backend.go-electra.com and
+    ocpi.go-electra.com, and the SPA shell on app.go-electra.com. No GraphQL
+    surface.
+- id: asyncapi
+  conforms: false
+  evidence: >-
+    No AsyncAPI document and no documented webhook or event surface exists on
+    any Electra host or in its help centre. Nothing is asserted about internal
+    eventing; OCPI's own push model (a partner-hosted eMSP endpoint) is defined
+    by the standard, not published by Electra.
+- id: oauth2
+  conforms: false
+  evidence: >-
+    No /.well-known/oauth-authorization-server or
+    /.well-known/oauth-protected-resource on any host (all 404 or SPA shell);
+    no OAuth documented.
+- id: oidc
+  conforms: false
+  evidence: /.well-known/openid-configuration returned 404 on every real Electra host.
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: >-
+    Errors are not problem+json. The 401 is text/plain (`Token: Access
+    denied.`); 404s are either text/plain `Not found` or the Rails default HTML
+    404 page. OCPI's own `status_code` envelope is used for success (1000).
+- id: rfc9116-security-txt
+  conforms: false
+  evidence: >-
+    /.well-known/security.txt returned 404 on go-electra.com,
+    backend.go-electra.com and ocpi.go-electra.com, and the SPA shell on
+    app.go-electra.com.
+- id: rfc8615-well-known
+  conforms: false
+  evidence: >-
+    No /.well-known/ document of any kind was served by any Electra host — see
+    well-known/go-electra-well-known.yml for the full probe table.
+- id: rfc8594-sunset-header
+  conforms: false
+  evidence: >-
+    No deprecation or sunset policy is published, and no Deprecation/Sunset
+    header appeared on any probed response.
+- id: a2a-agent-card
+  conforms: false
+  evidence: >-
+    /.well-known/agent-card.json and /.well-known/agent.json returned 404 on
+    go-electra.com, backend.go-electra.com, ocpi.go-electra.com and
+    careers.go-electra.com; app.go-electra.com and business.go-electra.com
+    return their SPA shell for every path, which is not an agent card.
+- id: mcp
+  conforms: false
+  evidence: No MCP server is published or discoverable. See mcp/go-electra-mcp.yml.
+- id: llmstxt
+  conforms: false
+  evidence: >-
+    /llms.txt returned 404 on go-electra.com and the SPA shell on
+    app.go-electra.com and stations.go-electra.com. A generated one is provided
+    at llms/go-electra-llms.txt and is ours, not Electra's.
+- id: idempotency
+  conforms: unknown
+  evidence: >-
+    No idempotency contract is documented, and the write-bearing OCPI modules
+    (commands POST, tokens PUT) are token-gated so no header behaviour could be
+    observed. OCPI itself defines PUT semantics on tokens but no
+    idempotency-key header. Nothing is asserted.
+- id: pagination
+  conforms: unknown
+  evidence: >-
+    OCPI defines offset/limit pagination with Link and X-Total-Count headers on
+    its SENDER modules, but Electra's locations/sessions/cdrs/tariffs endpoints
+    are gated so no pagination behaviour could be observed anonymously.
+- id: rate-limit-headers
+  conforms: false
+  evidence: >-
+    No X-RateLimit-*, RateLimit-* or Retry-After header appeared on any probed
+    response, including the anonymous 200s from /ocpi/cpo/versions. No limits
+    are documented.
+- id: iso-8601-datetime
+  conforms: true
+  evidence: >-
+    The OCPI envelope timestamp is ISO 8601 UTC — `"timestamp":
+    "2026-08-17T13:45:30Z"` on both version-detail responses.
+- id: iso-4217-currency
+  conforms: unknown
+  evidence: >-
+    Consumer pricing is published in EUR and CHF, but the OCPI tariffs module is
+    gated so the machine-readable currency field could not be observed.
+- id: tls-1.3
+  conforms: true
+  evidence: security/go-electra-domain-security.yml
+- id: hsts
+  conforms: true
+  evidence: >-
+    `strict-transport-security: max-age=63072000; includeSubDomains` observed on
+    ocpi.go-electra.com responses; see security/go-electra-domain-security.yml
+    for the full host table.
+- id: content-security-policy
+  conforms: true
+  evidence: >-
+    ocpi.go-electra.com returns a real restrictive CSP (default-src 'self') on
+    API responses, which is unusual for a JSON API and indicates a shared Rails
+    application layer.
+- id: iso-15118-plug-and-charge
+  conforms: partial
+  evidence: >-
+    Electra's help centre publishes a dedicated Plug&Charge collection (4
+    articles) alongside Autocharge (7 articles), so Plug&Charge is a live
+    product feature. No ISO 15118 version, certificate-handling detail or
+    conformance statement is published, so only the product claim is recorded.
+- id: ocpp
+  conforms: unknown
+  evidence: >-
+    Electra builds and operates its own hardware, which implies a charge-point
+    protocol, but no OCPP version or profile is published anywhere on its public
+    surface. Nothing is asserted.
+- id: eu-afir
+  conforms: unknown
+  evidence: >-
+    AFIR (EU 2023/1804) obliges operators of publicly accessible recharging
+    points to make static and dynamic data available, typically through a
+    national access point. Electra publishes no statement about AFIR data
+    provision and no open data feed of its own; whether it files to national
+    access points could not be established from its public surface.
+certifications_published: false
+certifications_note: >-
+  Electra runs a real trust centre at https://trust.go-electra.com/ (HTTP 200,
+  linked from the site footer as "Security", hosted on Vanta — the page's own
+  markup carries data-slugid 29bokoh51ag58ypkefl6z3 and og:image on
+  app.eu.vanta.com). Its contents render client-side from a signed Vanta bundle,
+  so no certification name (ISO 27001, SOC 2, PCI DSS, GDPR) could be read
+  anonymously, and none is asserted here. Because no certification is readable,
+  no `Compliance` pointer is emitted in apis.yml — the trust centre presence is
+  recorded as TrustCenter only.
