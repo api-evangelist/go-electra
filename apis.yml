@@ -35,7 +35,7 @@ description: >-
   the 180+ e-mobility service provider cards Electra's own help centre lists as
   accepted at its chargers.
 image: https://www.go-electra.com/favicons/apple-touch-icon-1024x1024.png
-specificationVersion: '0.20'
+specificationVersion: '0.23'
 created: '2026-08-17'
 modified: '2026-08-17'
 tags:
