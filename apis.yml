@@ -34,6 +34,17 @@ description: >-
   and readable only with a roaming agreement; its production use is evidenced by
   the 180+ e-mobility service provider cards Electra's own help centre lists as
   accepted at its chargers.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: false
+  label: Hosted service · you call their endpoint
+  confidence: medium
+  source:
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 image: https://www.go-electra.com/favicons/apple-touch-icon-1024x1024.png
 specificationVersion: '0.23'
 created: '2026-08-17'
