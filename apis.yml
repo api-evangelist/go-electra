@@ -116,6 +116,15 @@ apis:
   - OCPI
   - Roaming
   - Charge Point Operator
+  - Location
+  - Tariffs
+  - Charging Sessions
+  - Europe
+  tags_raw:
+  - EV Charging
+  - OCPI
+  - Roaming
+  - Charge Point Operator
   - Locations
   - Tariffs
   - Charging Sessions
