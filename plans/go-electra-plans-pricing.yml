@@ -93,3 +93,36 @@ api_pricing:
     agreement, and Electra publishes neither the terms nor a contact route
     specific to it — its help centre lists 180+ accepted e-mobility service
     provider cards but names no process for becoming one.
+x-canonical:
+  generated: '2026-10-08'
+  vocabulary: all/0-working/economics/plans-canonical.yml
+  models:
+  - metered
+  - negotiated
+  - subscription
+  units: []
+  plans:
+  - name: Electra+
+    access: other
+    model: subscription
+    model_how: stated
+    units: []
+    periods: []
+  - name: Pay-as-you-go (Electra app, no subscription)
+    access: other
+    model: metered
+    model_how: stated
+    units: []
+    periods: []
+  - name: Ad-hoc without the app (debit card or third-party charging pass)
+    access: other
+    model: metered
+    model_how: stated
+    units: []
+    periods: []
+  - name: Electra for professionals / fleets
+    access: enterprise
+    model: negotiated
+    model_how: derived
+    units: []
+    periods: []
