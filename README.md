@@ -64,22 +64,118 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Electra is a European operator of ultra-fast electric-vehicle charging, headquartered in Paris and
-led by co-founder and CEO Aurelien de Meaux. It designs, finances, installs and operates its own DC
-fast-charging stations — 770+ live with 68 more building, up to 400 kW — across France, Belgium,
-Spain, Italy, Germany, Austria, the Netherlands and Switzerland, with a stated target of 2,200
-stations / 15,000 charge points in Europe by 2030.
+Electra is a European operator of ultra-fast electric-vehicle charging, headquartered at 104 rue de Richelieu in the 2nd arrondissement of Paris and led by co-founder and CEO Aurelien de Meaux. It designs, finances, installs and operates its own DC fast-charging stations rather than reselling someone else's hardware, advertising 770+ live stations with 68 more under construction, charge rates up to 400 kW, and a target of 2,200 stations / 15,000 charge points across Europe by 2030. Its own pricing and station pages cover France, Belgium, Spain, Italy, Germany, Austria, the Netherlands and Switzerland, with city hubs in Paris, Lyon, Marseille, Brussels, Antwerp, Liege, Milan, Bologna, Turin, Madrid, Barcelona and Zurich. The commercial surface is consumer- and fleet-facing: a mobile app, an Electra+ subscription that cuts up to 0.20 EUR/kWh, an RFID charging card, Autocharge and Plug&Charge, and a fleet dashboard at business.go-electra.com. It is a Serena portfolio company and has raised a 160 MEUR round, a 304 MEUR Series B and a 433 MEUR debt facility. Electra publishes NO developer portal, NO API documentation, NO OpenAPI, NO llms.txt, NO MCP server and NO A2A agent card — every one of those was probed and missed on 2026-08-17. What it does run, and what almost nobody looking at the marketing site would find, is a real machine-readable API: a live Open Charge Point Interface implementation in the Charge Point Operator role at https://ocpi.go-electra.com/ocpi/cpo, serving BOTH OCPI 2.1.1 and OCPI 2.2.1 concurrently. Its version-negotiation endpoints answer anonymously with HTTP 200 and enumerate the full module inventory — cdrs, commands, credentials, locations, sessions, tariffs and tokens, with SENDER/RECEIVER roles declared on the 2.2.1 surface — while every data module itself returns HTTP 401 with `WWW-Authenticate: Token realm="Application"`, OCPI's own bilateral token scheme. That is a documented open industry standard, fully implemented, discoverable without credentials and readable only with a roaming agreement; its production use is evidenced by the 180+ e-mobility service provider cards Electra's own help centre lists as accepted at its chargers.
 
-**API surface.** Electra publishes no developer portal, no API documentation, no OpenAPI, no
-GraphQL, no MCP server and no A2A agent card — all probed and missed on 2026-08-17. It does run one
-real machine-readable API: an Open Charge Point Interface (OCPI) implementation in the Charge Point
-Operator role at `https://ocpi.go-electra.com/ocpi/cpo`, serving OCPI 2.1.1 and 2.2.1 concurrently.
-Version negotiation answers anonymously with HTTP 200 and enumerates all seven modules (cdrs,
-commands, credentials, locations, sessions, tariffs, tokens) with SENDER/RECEIVER roles on 2.2.1;
-every data module returns HTTP 401 with `WWW-Authenticate: Token realm="Application"`, OCPI's own
-bilateral token scheme. Access follows a commercial roaming agreement — there is no signup, no
-sandbox and no self-service credential.
+**Areas:** Company · Climate Tech · EV Charging · Energy · Mobility · OCPI · Roaming · Charge Point Operator · Electric Vehicles · Fast Charging · Charging Sessions · Tariffs
 
-Sector: climate-tech.
+## Electra on APIs.io
 
-Source: portfolio company of [serena](https://github.com/api-evangelist/serena) — https://www.go-electra.com/
+Everything profiled for Electra is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/go-electra/](https://apis.io/providers/go-electra/)** — or go straight to one of the APIs or properties below.
+
+### APIs (1)
+
+- [Electra OCPI CPO API](https://apis.io/apis/go-electra/go-electra-ocpi-cpo-api/) — Electra's Open Charge Point Interface implementation in the Charge Point Operator role — the roaming interface an e-mobility service provider calls to read…
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [go-electra](https://apis.io/servers/go-electra/go-electra/)
+
+#### Examples (3)
+
+Example requests and responses.
+
+- [Go Electra Ocpi Cpo 2.1.1 Endpoints](https://apis.io/examples/go-electra/go-electra-ocpi-cpo-2.1.1-endpoints/)
+- [Go Electra Ocpi Cpo 2.2.1 Endpoints](https://apis.io/examples/go-electra/go-electra-ocpi-cpo-2.2.1-endpoints/)
+- [Go Electra Ocpi Cpo Versions](https://apis.io/examples/go-electra/go-electra-ocpi-cpo-versions/)
+
+#### Security (3)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Go Electra Authentication](https://apis.io/security/go-electra/go-electra-authentication/)
+- [Go Electra Domain Security](https://apis.io/security/go-electra/go-electra-domain-security/)
+- [Go Electra Trust Center](https://apis.io/security/go-electra/go-electra-trust-center/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Go Electra Plans Pricing](https://apis.io/plans/go-electra/go-electra-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Go Electra Rate Limits](https://apis.io/rate-limits/go-electra/go-electra-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://www.go-electra.com/)
+- [Pricing](https://www.go-electra.com/en/price/)
+- [Sign up](https://business.go-electra.com/register)
+- [Support](https://intercom.help/go-electra/en/)
+- [Blog](https://www.go-electra.com/en/newsroom/all-categories/)
+- [Trust centre](https://trust.go-electra.com/)
+- [Terms of service](https://www.go-electra.com/en/tos/)
+- [Privacy policy](https://www.go-electra.com/en/privacy/)
+
+## API Evangelist rating
+
+**Kin Score 31.4** — thin · rubric 0.24.0 · scored 2026-10-17
+
+| Facet | Score |
+|---|---|
+| Discoverability | 66.1 |
+| Contract quality | 6.5 |
+| Contract governance | 18.2 |
+| Operational transparency | 0.0 |
+| Developer ergonomics | 19.0 |
+| Access clarity | 77.6 |
+
+**Agent readiness 9.2** — agent-aware
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | — |
+| Agentic Access | — |
+| Reversibility Documented | — |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | documented (partial credit) |
+| OpenAPI Examples | documented (partial credit) |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | — |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+
+**Regulatory alignment 24.6** — Energy & Utilities
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/go-electra/](https://apis.io/providers/go-electra/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Electra: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/go-electra/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
